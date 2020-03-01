@@ -29,7 +29,14 @@ def api_all():
     curs = conect.cursor()
     all_items = curs.execute('SELECT * FROM items;').fetchall()
 
-    return jsonify(all_items)
+    con = sqlite3.connect('weatherIcons.db')
+    con.row_factory = dict_factory
+    cur = con.cursor()
+    all_icons = cur.execute('SELECT * FROM weatherIcons;').fetchall()
+
+    everything = all_items + all_icons
+
+    return jsonify(everything)
 
 
 @app.errorhandler(404)
@@ -64,6 +71,30 @@ def api_filter():
 
     return jsonify(results)
 
+#Adds ability to filter weather icons by id
+@app.route('/api/v1/resources/weatherIcons', methods=['GET'])
+def icon_filter():
+    query_params = request.args
 
+    id = query_params.get('id')
+
+    query = "SELECT * FROM weatherIcons WHERE"
+    to_filter = []
+
+    if id:
+        query += ' id=? AND'
+        to_filter.append(id)
+    if not (id):
+        return page_not_found(404)
+
+    query = query[:-4] + ';'
+
+    conn = sqlite3.connect('weatherIcons.db')
+    conn.row_factory = dict_factory
+    curso = conn.cursor()
+
+    results = curso.execute(query, to_filter).fetchall()
+
+    return jsonify(results)
 
 app.run()
