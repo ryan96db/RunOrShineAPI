@@ -14,7 +14,6 @@ def dict_factory(cursor, row):
     return d
 
 
-
 @app.route('/', methods=['GET'])
 def home():
     return "<h1>RunOrShineAPI</h1><p>Prototype</p>"
