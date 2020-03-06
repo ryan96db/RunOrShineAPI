@@ -5,7 +5,8 @@ import sqlite3
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
-
+def getApp():
+    return app
 
 def dict_factory(cursor, row):
     d = {}
